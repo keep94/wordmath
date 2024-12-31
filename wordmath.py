@@ -36,7 +36,7 @@ def _Solve(f, max, words, addConverter):
     letters.extend(word)
   orderedletters = sorted(set(letters))
   if len(orderedletters) > 10:
-    raise Exception, "More than 10 letters"
+    raise Exception("More than 10 letters")
   perms = itertools.permutations(range(10), len(orderedletters))
   result = []
   for perm in perms:
