@@ -1,26 +1,75 @@
 import itertools
 
+_ALL_DIGITS=dict((str(x), x) for x in range(10))
 
-def Solve(f, *words, allow_leading_zeros=False, allow_digit_sharing=False):
-  result = _Solve(f, 1, words, False, allow_leading_zeros, allow_digit_sharing)
+def Solve(
+    f,
+    *words,
+    allow_leading_zeros=False,
+    allow_digit_sharing=False,
+    digits_for_letters=range(10)):
+  result = _Solve(
+      f,
+      1,
+      words,
+      False,
+      allow_leading_zeros,
+      allow_digit_sharing,
+      digits_for_letters)
   if result:
     return result[0]
   return None
 
 
-def SolveAll(f, *words, allow_leading_zeros=False, allow_digit_sharing=False):
-  return _Solve(f, 0, words, False, allow_leading_zeros, allow_digit_sharing)
+def SolveAll(
+    f,
+    *words,
+    allow_leading_zeros=False,
+    allow_digit_sharing=False,
+    digits_for_letters=range(10)):
+  return _Solve(
+      f,
+      0,
+      words,
+      False,
+      allow_leading_zeros,
+      allow_digit_sharing,
+      digits_for_letters)
 
 
-def SolveC(f, *words, allow_leading_zeros=False, allow_digit_sharing=False):
-  result = _Solve(f, 1, words, True, allow_leading_zeros, allow_digit_sharing)
+def SolveC(
+    f,
+    *words,
+    allow_leading_zeros=False,
+    allow_digit_sharing=False,
+    digits_for_letters=range(10)):
+  result = _Solve(
+      f,
+      1,
+      words,
+      True,
+      allow_leading_zeros,
+      allow_digit_sharing,
+      digits_for_letters)
   if result:
     return result[0]
   return None
 
 
-def SolveAllC(f, *words, allow_leading_zeros=False, allow_digit_sharing=False):
-  return _Solve(f, 0, words, True, allow_leading_zeros, allow_digit_sharing)
+def SolveAllC(
+    f,
+    *words,
+    allow_leading_zeros=False,
+    allow_digit_sharing=False,
+    digits_for_letters=range(10)):
+  return _Solve(
+      f,
+      0,
+      words,
+      True,
+      allow_leading_zeros,
+      allow_digit_sharing,
+      digits_for_letters)
 
 
 def _Eval(context, word, hasLeadingZeros):
@@ -32,22 +81,22 @@ def _Eval(context, word, hasLeadingZeros):
   return result
 
 
-def _Solve(f, max, words, addConverter, allowLeadingZeros, allowDigitSharing):
+def _Solve(
+    f,
+    max,
+    words,
+    addConverter,
+    allowLeadingZeros,
+    allowDigitSharing,
+    digitsForLetters):
   letters = []
   for word in words:
     letters.extend(word)
-  orderedletters = sorted(set(letters))
-  if allowDigitSharing:
-    perms = itertools.product(range(10), repeat=len(orderedletters))
-  else:
-    if len(orderdletters) > 10:
-      raise Exception("More than 10 letters")
-    perms = itertools.permutations(range(10), len(orderedletters))
   result = []
   hasLeadingZeros = [False]
-  for perm in perms:
+  for lettersToDigits in _LetterToDigitCombos(
+      letters, digitsForLetters, allowDigitSharing):
     hasLeadingZeros[0] = False
-    lettersToDigits = dict(zip(orderedletters, perm))
     context = tuple(_Eval(lettersToDigits, w, hasLeadingZeros) for w in words)
     if (not allowLeadingZeros) and hasLeadingZeros[0]:
       continue
@@ -62,3 +111,18 @@ def _Solve(f, max, words, addConverter, allowLeadingZeros, allowDigitSharing):
       if len(result) == max:
         return result
   return result
+
+
+def _LetterToDigitCombos(letters, digitsForLetters, allowDigitSharing):
+  digitsForLetters = set(digitsForLetters)
+  if digitsForLetters.difference(range(10)):
+    raise ValueError("digits_for_letters must contain values between 0-9")
+  orderedLetters = sorted(set(letters).difference(_ALL_DIGITS))
+  if allowDigitSharing:
+    perms = itertools.product(digitsForLetters, repeat=len(orderedLetters))
+  else:
+    perms = itertools.permutations(digitsForLetters, len(orderedLetters))
+  for perm in perms:
+    lettersToDigits = dict(zip(orderedLetters, perm))
+    lettersToDigits.update(_ALL_DIGITS)
+    yield lettersToDigits

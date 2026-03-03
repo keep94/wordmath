@@ -10,7 +10,7 @@ to solve for and it does the rest.
 
 # The python code
 
-## wordmath.Solve(f, *words, allow_leading_zeros=False, allow_digit_sharing=False)
+## wordmath.Solve(f, *words, allow_leading_zeros=False, allow_digit_sharing=False, digits_for_letters=range(10))
 
 Solve solves a wordmath puzzle. f is a function that takes any number of
 numeric values as input and returns true if those values solve the puzzle
@@ -24,24 +24,26 @@ Optional Parameters:
 Default is False.
 - allow_digit_sharing: If True, two different letters can have the same
 digit. Default is False.
+- digits_for_letters: The digits that letters can be assigned to.
+Default is 0 through 9.
 
-The following example solves the wordmath puzzle 4 * PUZZLE = WINTER
-The solution is PUZZLE = 237716; WINTER = 950864
+The following example solves the wordmath puzzle 4 * PU77LE = WINTER
+The solution is PU77LE = 237716; WINTER = 950864
 
 ```
 >>> import wordmath
->>> f = lambda PUZZLE, WINTER: 4*PUZZLE == WINTER
->>> wordmath.Solve(f, "PUZZLE", "WINTER")
+>>> f = lambda x, y: 4*x == y
+>>> wordmath.Solve(f, "PU77LE", "WINTER")
 (237716, 950864)
 ```
 
-## wordmath.SolveAll(f, *words, allow_leading_zeros=False, allow_digit_sharing=False)
+## wordmath.SolveAll(f, *words, allow_leading_zeros=False, allow_digit_sharing=False, digits_for_letters=range(10))
 
 SolveAll works just like Solve except that instead of returning just one
 solution, it returns all solutions as a list of tuples. SolveAll
 returns an empty list if it could find no solutions.
 
-## wordmath.SolveC(f, *words, allow_leading_zeros=False, allow_digit_sharing=False)
+## wordmath.SolveC(f, *words, allow_leading_zeros=False, allow_digit_sharing=False, digits_for_letters=range(10))
 
 SolveC works like Solve except that f takes one parameter: a context. This
 context can evaluate any variable name as long as the letters of the name
@@ -59,21 +61,23 @@ Default is False. If False, if f evaluates a variable name that has a
 leading zero, then that solution won't count even if f returns true.
 - allow_digit_sharing: If True, two different letters can have the same
 digit. Default is False.
+- digits_for_letters: The digits that letters can be assigned to.
+Default is 0 through 9.
 
-The following example solves 3 * PUZZLE + ZZLEWI = WINTER. In this example,
-ZZLEWI is an intermediate variable as the principal variables we are solving
-for are PUZZLE and WINTER.
+The following example solves 3 * PU22LE + 22LEWI = WINTER. In this example,
+22LEWI is an intermediate variable as the principal variables we are solving
+for are PULE and WINTER.
 
-The solution is PUZZLE = 152237; WINTER = 680479
+The solution is PULE = 1537; WINTER = 680479
 
 ```
 >>> import wordmath
->>> f = lambda c: 3*c("puzzle") + c("zzlewi") == c("winter")
->>> wordmath.SolveC(f, "puzzle", "winter")
-(152237, 680479)
+>>> f = lambda c: 3*c("pu22le") + c("22lewi") == c("winter")
+>>> wordmath.SolveC(f, "pule", "winter")
+(1537, 680479)
 ```
 
-## wordmath.SolveAllC(f, *words, allow_leading_zeros=False, allow_digit_sharing=False)
+## wordmath.SolveAllC(f, *words, allow_leading_zeros=False, allow_digit_sharing=False, digits_for_letters=range(10))
 
 SolveAllC works just like SolveC except that it returns all solutions as
 a list of tuples or the empty list if it cannot find any solutions.
