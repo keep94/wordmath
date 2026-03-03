@@ -1,26 +1,26 @@
 import itertools
 
 
-def Solve(f, *words, allow_leading_zeros=False):
-  result = _Solve(f, 1, words, False, allow_leading_zeros)
+def Solve(f, *words, allow_leading_zeros=False, allow_digit_sharing=False):
+  result = _Solve(f, 1, words, False, allow_leading_zeros, allow_digit_sharing)
   if result:
     return result[0]
   return None
 
 
-def SolveAll(f, *words, allow_leading_zeros=False):
-  return _Solve(f, 0, words, False, allow_leading_zeros)
+def SolveAll(f, *words, allow_leading_zeros=False, allow_digit_sharing=False):
+  return _Solve(f, 0, words, False, allow_leading_zeros, allow_digit_sharing)
 
 
-def SolveC(f, *words, allow_leading_zeros=False):
-  result = _Solve(f, 1, words, True, allow_leading_zeros)
+def SolveC(f, *words, allow_leading_zeros=False, allow_digit_sharing=False):
+  result = _Solve(f, 1, words, True, allow_leading_zeros, allow_digit_sharing)
   if result:
     return result[0]
   return None
 
 
-def SolveAllC(f, *words, allow_leading_zeros=False):
-  return _Solve(f, 0, words, True, allow_leading_zeros)
+def SolveAllC(f, *words, allow_leading_zeros=False, allow_digit_sharing=False):
+  return _Solve(f, 0, words, True, allow_leading_zeros, allow_digit_sharing)
 
 
 def _Eval(context, word, hasLeadingZeros):
@@ -32,14 +32,17 @@ def _Eval(context, word, hasLeadingZeros):
   return result
 
 
-def _Solve(f, max, words, addConverter, allowLeadingZeros):
+def _Solve(f, max, words, addConverter, allowLeadingZeros, allowDigitSharing):
   letters = []
   for word in words:
     letters.extend(word)
   orderedletters = sorted(set(letters))
-  if len(orderedletters) > 10:
-    raise Exception("More than 10 letters")
-  perms = itertools.permutations(range(10), len(orderedletters))
+  if allowDigitSharing:
+    perms = itertools.product(range(10), repeat=len(orderedletters))
+  else:
+    if len(orderdletters) > 10:
+      raise Exception("More than 10 letters")
+    perms = itertools.permutations(range(10), len(orderedletters))
   result = []
   hasLeadingZeros = [False]
   for perm in perms:
