@@ -73,7 +73,8 @@ The solution is PULE = 1537; WINTER = 680479
 ```
 >>> import wordmath
 >>> f = lambda c: 3*c("pu22le") + c("22lewi") == c("winter")
->>> wordmath.SolveC(f, "pule", "winter")
+>>> digits_for_letters=set(range(10)).difference([2]) # Exclude 2 in solution
+>>> wordmath.SolveC(f, "pule", "winter", digits_for_letters=digits_for_letters)
 (1537, 680479)
 ```
 
